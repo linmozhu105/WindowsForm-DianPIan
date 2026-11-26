@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.IO;
+using System.IO.Ports;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -544,16 +545,19 @@ namespace WindowsForm_DianPIan
                     SaveCheckResult(OKNum, NGNum, (double)OKCount / TotalCount, TotalNum);
 
 
-                    bool comResult = ComPortAPI.Send("COM1", jieGuo);
-                    if (comResult)
-                    {
-                        AppendLog("数据传输成功");
-                    }
-                    else
-                    {
-                        AppendLog("数据传输失败");
-                    }
-
+                    //SerialPort comResult = ComPortAPI.Send("COM1", jieGuo);
+                    //comResult.DataReceived += Sp_DataReceived;
+                    //if (comResult)
+                    //{
+                    //    AppendLog("数据发送成功");
+                    //}
+                    //else
+                    //{
+                    //    AppendLog("数据传输失败");
+                    //}
+                    //serialportl.Open();
+                    serialPort1.Write(jieGuo);
+                    serialPort1.DataReceived += Sp_DataReceived;
                 }
                 catch (Exception ex)
                 {
@@ -564,6 +568,15 @@ namespace WindowsForm_DianPIan
             #endregion
         }
         #endregion
+        public void Sp_DataReceived(object sender, SerialDataReceivedEventArgs e)
+        {
+            SerialPort sp = sender as SerialPort;
+            int size = sp.BytesToRead;
+            byte[] buffer = new byte[size];
+            sp?.Read(buffer, 0, size);
+            string data = Encoding.UTF8.GetString(buffer);
+            sp.Close();
+        }
 
         #region 十、检测记录加载（【加载数据】按钮）
         /// <summary>

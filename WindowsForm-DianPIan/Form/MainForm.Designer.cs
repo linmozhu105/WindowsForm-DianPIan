@@ -77,6 +77,7 @@
             this.tsmiSheZhiYinDaoBiaoDing = new System.Windows.Forms.ToolStripMenuItem();
             this.tsmiTongXin = new System.Windows.Forms.ToolStripMenuItem();
             this.tsmiXiuGaiTongXinFangShi = new System.Windows.Forms.ToolStripMenuItem();
+            this.serialPort1 = new System.IO.Ports.SerialPort(this.components);
             this.tlpZongTi.SuspendLayout();
             this.tlpZuoCe.SuspendLayout();
             this.tlpShuangTu.SuspendLayout();
@@ -647,7 +648,7 @@
             // tsmiCeLiangDianPian
             // 
             this.tsmiCeLiangDianPian.Name = "tsmiCeLiangDianPian";
-            this.tsmiCeLiangDianPian.Size = new System.Drawing.Size(224, 26);
+            this.tsmiCeLiangDianPian.Size = new System.Drawing.Size(170, 26);
             this.tsmiCeLiangDianPian.Text = "测量垫片TB";
             this.tsmiCeLiangDianPian.Click += new System.EventHandler(this.tsmiCeLiangDianPian_Click);
             // 
@@ -676,7 +677,7 @@
             // tsmiXiuGaiXiangJiCanShu
             // 
             this.tsmiXiuGaiXiangJiCanShu.Name = "tsmiXiuGaiXiangJiCanShu";
-            this.tsmiXiuGaiXiangJiCanShu.Size = new System.Drawing.Size(224, 26);
+            this.tsmiXiuGaiXiangJiCanShu.Size = new System.Drawing.Size(182, 26);
             this.tsmiXiuGaiXiangJiCanShu.Text = "修改相机参数";
             this.tsmiXiuGaiXiangJiCanShu.Click += new System.EventHandler(this.tsmiXiuGaiXiangJiCanShu_Click);
             // 
@@ -804,5 +805,6 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn colLeiXing;
         private System.Windows.Forms.DataGridViewTextBoxColumn colJieGuo;
         private System.Windows.Forms.DataGridViewTextBoxColumn colBeiZhu;
+        private System.IO.Ports.SerialPort serialPort1;
     }
 }
