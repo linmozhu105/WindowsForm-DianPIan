@@ -370,6 +370,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CameraParams.cs" />
+    <Compile Include="ComPortAPI.cs" />
     <Compile Include="CsvAPI.cs" />
     <Compile Include="CsvData.cs" />
     <Compile Include="Form\FrmCameraParams.cs">
@@ -377,6 +378,12 @@
     </Compile>
     <Compile Include="Form\FrmCameraParams.Designer.cs">
       <DependentUpon>FrmCameraParams.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Form\FrmToolBlock.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Form\FrmToolBlock.Designer.cs">
+      <DependentUpon>FrmToolBlock.cs</DependentUpon>
     </Compile>
     <Compile Include="Form\MainForm.cs">
       <SubType>Form</SubType>
@@ -390,6 +397,9 @@
     <Compile Include="SingleToolBlock.cs" />
     <EmbeddedResource Include="Form\FrmCameraParams.resx">
       <DependentUpon>FrmCameraParams.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Form\FrmToolBlock.resx">
+      <DependentUpon>FrmToolBlock.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Form\MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>

@@ -40,6 +40,10 @@
             this.crdYuanTu = new Cognex.VisionPro.CogRecordDisplay();
             this.crdChuLiTu = new Cognex.VisionPro.CogRecordDisplay();
             this.dgvJianCeJiLu = new System.Windows.Forms.DataGridView();
+            this.colShiJian = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colLeiXing = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colJieGuo = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colBeiZhu = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.tlpYouCe = new System.Windows.Forms.TableLayoutPanel();
             this.grpGongNengQu = new System.Windows.Forms.GroupBox();
             this.flpAnNiu = new System.Windows.Forms.FlowLayoutPanel();
@@ -57,6 +61,7 @@
             this.lblZongShu = new System.Windows.Forms.Label();
             this.txtZongShu = new System.Windows.Forms.TextBox();
             this.btnQingLing = new System.Windows.Forms.Button();
+            this.btnJiaZaiShuJu = new System.Windows.Forms.Button();
             this.grpRiZhi = new System.Windows.Forms.GroupBox();
             this.lstRiZhi = new System.Windows.Forms.ListBox();
             this.mnsCaiDan = new System.Windows.Forms.MenuStrip();
@@ -72,11 +77,6 @@
             this.tsmiSheZhiYinDaoBiaoDing = new System.Windows.Forms.ToolStripMenuItem();
             this.tsmiTongXin = new System.Windows.Forms.ToolStripMenuItem();
             this.tsmiXiuGaiTongXinFangShi = new System.Windows.Forms.ToolStripMenuItem();
-            this.btnJiaZaiShuJu = new System.Windows.Forms.Button();
-            this.colShiJian = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.colLeiXing = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.colJieGuo = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.colBeiZhu = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.tlpZongTi.SuspendLayout();
             this.tlpZuoCe.SuspendLayout();
             this.tlpShuangTu.SuspendLayout();
@@ -208,6 +208,7 @@
             this.crdChuLiTu.OcxState = ((System.Windows.Forms.AxHost.State)(resources.GetObject("crdChuLiTu.OcxState")));
             this.crdChuLiTu.Size = new System.Drawing.Size(402, 406);
             this.crdChuLiTu.TabIndex = 3;
+            this.crdChuLiTu.Enter += new System.EventHandler(this.crdChuLiTu_Enter);
             // 
             // dgvJianCeJiLu
             // 
@@ -254,6 +255,34 @@
             this.dgvJianCeJiLu.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dgvJianCeJiLu.Size = new System.Drawing.Size(815, 250);
             this.dgvJianCeJiLu.TabIndex = 4;
+            // 
+            // colShiJian
+            // 
+            this.colShiJian.DataPropertyName = "Time";
+            this.colShiJian.HeaderText = "时间";
+            this.colShiJian.MinimumWidth = 6;
+            this.colShiJian.Name = "colShiJian";
+            // 
+            // colLeiXing
+            // 
+            this.colLeiXing.DataPropertyName = "CsvCheckType";
+            this.colLeiXing.HeaderText = "检测类型";
+            this.colLeiXing.MinimumWidth = 6;
+            this.colLeiXing.Name = "colLeiXing";
+            // 
+            // colJieGuo
+            // 
+            this.colJieGuo.DataPropertyName = "DataResult";
+            this.colJieGuo.HeaderText = "结果";
+            this.colJieGuo.MinimumWidth = 6;
+            this.colJieGuo.Name = "colJieGuo";
+            // 
+            // colBeiZhu
+            // 
+            this.colBeiZhu.DataPropertyName = "Mark";
+            this.colBeiZhu.HeaderText = "备注";
+            this.colBeiZhu.MinimumWidth = 6;
+            this.colBeiZhu.Name = "colBeiZhu";
             // 
             // tlpYouCe
             // 
@@ -534,6 +563,26 @@
             this.btnQingLing.Text = "清零";
             this.btnQingLing.UseVisualStyleBackColor = false;
             // 
+            // btnJiaZaiShuJu
+            // 
+            this.btnJiaZaiShuJu.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnJiaZaiShuJu.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(249)))), ((int)(((byte)(251)))));
+            this.btnJiaZaiShuJu.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnJiaZaiShuJu.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(225)))), ((int)(((byte)(231)))));
+            this.btnJiaZaiShuJu.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(232)))), ((int)(((byte)(236)))), ((int)(((byte)(241)))));
+            this.btnJiaZaiShuJu.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(245)))), ((int)(((byte)(249)))));
+            this.btnJiaZaiShuJu.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnJiaZaiShuJu.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.btnJiaZaiShuJu.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(55)))), ((int)(((byte)(65)))), ((int)(((byte)(81)))));
+            this.btnJiaZaiShuJu.Location = new System.Drawing.Point(135, 98);
+            this.btnJiaZaiShuJu.Margin = new System.Windows.Forms.Padding(0, 6, 4, 0);
+            this.btnJiaZaiShuJu.Name = "btnJiaZaiShuJu";
+            this.btnJiaZaiShuJu.Size = new System.Drawing.Size(96, 28);
+            this.btnJiaZaiShuJu.TabIndex = 9;
+            this.btnJiaZaiShuJu.Text = "加载数据";
+            this.btnJiaZaiShuJu.UseVisualStyleBackColor = false;
+            this.btnJiaZaiShuJu.Click += new System.EventHandler(this.btnJiaZaiShuJu_Click);
+            // 
             // grpRiZhi
             // 
             this.grpRiZhi.BackColor = System.Drawing.Color.White;
@@ -598,8 +647,9 @@
             // tsmiCeLiangDianPian
             // 
             this.tsmiCeLiangDianPian.Name = "tsmiCeLiangDianPian";
-            this.tsmiCeLiangDianPian.Size = new System.Drawing.Size(170, 26);
+            this.tsmiCeLiangDianPian.Size = new System.Drawing.Size(224, 26);
             this.tsmiCeLiangDianPian.Text = "测量垫片TB";
+            this.tsmiCeLiangDianPian.Click += new System.EventHandler(this.tsmiCeLiangDianPian_Click);
             // 
             // tsmiShuJu
             // 
@@ -626,7 +676,7 @@
             // tsmiXiuGaiXiangJiCanShu
             // 
             this.tsmiXiuGaiXiangJiCanShu.Name = "tsmiXiuGaiXiangJiCanShu";
-            this.tsmiXiuGaiXiangJiCanShu.Size = new System.Drawing.Size(182, 26);
+            this.tsmiXiuGaiXiangJiCanShu.Size = new System.Drawing.Size(224, 26);
             this.tsmiXiuGaiXiangJiCanShu.Text = "修改相机参数";
             this.tsmiXiuGaiXiangJiCanShu.Click += new System.EventHandler(this.tsmiXiuGaiXiangJiCanShu_Click);
             // 
@@ -672,54 +722,6 @@
             this.tsmiXiuGaiTongXinFangShi.Size = new System.Drawing.Size(182, 26);
             this.tsmiXiuGaiTongXinFangShi.Text = "修改通信方式";
             // 
-            // btnJiaZaiShuJu
-            // 
-            this.btnJiaZaiShuJu.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnJiaZaiShuJu.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(249)))), ((int)(((byte)(251)))));
-            this.btnJiaZaiShuJu.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnJiaZaiShuJu.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(225)))), ((int)(((byte)(231)))));
-            this.btnJiaZaiShuJu.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(232)))), ((int)(((byte)(236)))), ((int)(((byte)(241)))));
-            this.btnJiaZaiShuJu.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(245)))), ((int)(((byte)(249)))));
-            this.btnJiaZaiShuJu.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnJiaZaiShuJu.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.btnJiaZaiShuJu.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(55)))), ((int)(((byte)(65)))), ((int)(((byte)(81)))));
-            this.btnJiaZaiShuJu.Location = new System.Drawing.Point(135, 98);
-            this.btnJiaZaiShuJu.Margin = new System.Windows.Forms.Padding(0, 6, 4, 0);
-            this.btnJiaZaiShuJu.Name = "btnJiaZaiShuJu";
-            this.btnJiaZaiShuJu.Size = new System.Drawing.Size(96, 28);
-            this.btnJiaZaiShuJu.TabIndex = 9;
-            this.btnJiaZaiShuJu.Text = "加载数据";
-            this.btnJiaZaiShuJu.UseVisualStyleBackColor = false;
-            this.btnJiaZaiShuJu.Click += new System.EventHandler(this.btnJiaZaiShuJu_Click);
-            // 
-            // colShiJian
-            // 
-            this.colShiJian.DataPropertyName = "Time";
-            this.colShiJian.HeaderText = "时间";
-            this.colShiJian.MinimumWidth = 6;
-            this.colShiJian.Name = "colShiJian";
-            // 
-            // colLeiXing
-            // 
-            this.colLeiXing.DataPropertyName = "CsvCheckType";
-            this.colLeiXing.HeaderText = "检测类型";
-            this.colLeiXing.MinimumWidth = 6;
-            this.colLeiXing.Name = "colLeiXing";
-            // 
-            // colJieGuo
-            // 
-            this.colJieGuo.DataPropertyName = "DataResult";
-            this.colJieGuo.HeaderText = "结果";
-            this.colJieGuo.MinimumWidth = 6;
-            this.colJieGuo.Name = "colJieGuo";
-            // 
-            // colBeiZhu
-            // 
-            this.colBeiZhu.DataPropertyName = "Mark";
-            this.colBeiZhu.HeaderText = "备注";
-            this.colBeiZhu.MinimumWidth = 6;
-            this.colBeiZhu.Name = "colBeiZhu";
-            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
@@ -734,6 +736,7 @@
             this.Name = "MainForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "检测主页";
+            this.Load += new System.EventHandler(this.MainForm_Load_1);
             this.tlpZongTi.ResumeLayout(false);
             this.tlpZuoCe.ResumeLayout(false);
             this.tlpShuangTu.ResumeLayout(false);

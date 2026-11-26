@@ -6,10 +6,19 @@ using System.Runtime.InteropServices;
 
 namespace WindowsFormsApp1
 {
+    /// <summary>
+    /// INI 配置文件读写工具类
+    /// 底层实现：通过 DllImport 调用 kernel32.dll 的 GetPrivateProfileString / WritePrivateProfileString
+    ///           等一组 Profile API，也就是 Windows 原生的 INI 读写接口（早期 Win32 程序的标准做法）。
+    /// 适用范围：只适合小型配置（单个文件几十 KB 以内），读写都在内核态完成，直接映射到磁盘文件；
+    ///           不适合当数据库用——没有事务、没有并发控制、单个值有长度上限。
+    /// 方法命名：INIGetXxx 一组为读取，INIWriteXxx 为写入，INIDeleteXxx / INIEmptyXxx 为删除与清空。
+    /// 通用注意：① 节点（Section）名与键（Key）名都不区分大小写；
+    ///           ② 文件不存在时，读取返回默认值，写入会自动创建文件与目录所在的文件；
+    ///           ③ 全部是静态方法、不长期持有文件句柄，但多线程同时写同一个文件仍可能互相覆盖，不要并发写。
+    /// </summary>
     public class IniAPI
     {
-        #region INI文件操作
-
         /*
          * 针对INI文件的API操作方法，其中的节点（Section)、键（KEY）都不区分大小写
          * 如果指定的INI文件不存在，会自动创建该文件。
@@ -93,7 +102,9 @@ namespace WindowsFormsApp1
 
         #endregion
 
-        #region 封装
+        #region 封装：读取
+
+        #region 读取节点 / 条目 / 键列表
 
         /// <summary>
         /// 读取INI文件中指定INI文件中的所有节点名称(Section)
@@ -182,6 +193,9 @@ namespace WindowsFormsApp1
 
             return value;
         }
+        #endregion
+
+        #region 读取单个键值
 
         /// <summary>
         /// 读取INI文件中指定KEY的字符串型值
@@ -217,7 +231,8 @@ namespace WindowsFormsApp1
 
             return value;
         }
-        
+        #endregion
+
         #region 类型化读取（int / double / string 便捷重载）
         /// <summary>
         /// 读取整型值（便捷版）
@@ -273,6 +288,9 @@ namespace WindowsFormsApp1
             return lpReturnedString.ToString();
         }
         #endregion
+        #endregion
+
+        #region 封装：写入
 
         /// <summary>
         /// 在INI文件中，将指定的键值对写到指定的节点，如果已经存在则替换
@@ -324,6 +342,10 @@ namespace WindowsFormsApp1
             return IniAPI.WritePrivateProfileString(section, key, value, iniFile);
 
         }
+
+        #endregion
+
+        #region 封装：删除
 
         /// <summary>
         /// 在INI文件中，删除指定节点中的指定的键。
@@ -378,8 +400,6 @@ namespace WindowsFormsApp1
 
             return IniAPI.WritePrivateProfileSection(section, string.Empty, iniFile);
         }
-
-        #endregion
 
         #endregion
 

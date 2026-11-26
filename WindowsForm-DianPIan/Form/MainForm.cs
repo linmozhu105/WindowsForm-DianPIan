@@ -24,7 +24,7 @@ namespace WindowsForm_DianPIan
     /// </summary>
     public partial class MainForm : Form
     {
-        #region 检测类型枚举
+        #region 一、检测类型枚举
         /// <summary>
         /// 检测类型：给检测记录和 CSV 标记本次检测属于哪一类工艺
         /// 注意：ToString() 会直接把枚举名写成中文进文件，改名等于改文件内容，非必要不要动
@@ -38,7 +38,7 @@ namespace WindowsForm_DianPIan
         }
         #endregion
 
-        #region 全局成员变量
+        #region 二、全局成员变量
         /// <summary>
         /// 相机抓取器：代表单台GigE相机设备
         /// 提供相机级操作（取视频格式、创建FIFO、读写相机Feature）
@@ -68,6 +68,7 @@ namespace WindowsForm_DianPIan
         /// 与 FrmCameraParams 共用同一个文件，所以节名与键名必须两边一致，改一处要同步另一处
         /// </summary>
         private string iniFile = Path.Combine(Application.StartupPath, "INI", "camera.ini");
+        private string iniFile2 = Path.Combine(Application.StartupPath, "INI", "Result.ini");
 
         /// <summary>
         /// 相机触发模式：true=硬触发，false=软触发
@@ -121,7 +122,8 @@ namespace WindowsForm_DianPIan
         /// </summary>
         private BindingList<CsvData> list;
         #endregion
-        #region 构造函数
+
+        #region 三、构造函数
         /// <summary>
         /// 主窗体构造函数
         /// 做三件事：由设计器生成控件（InitializeComponent）、挂上窗体加载事件、取工具块单例；
@@ -140,10 +142,23 @@ namespace WindowsForm_DianPIan
             // 把整个列表绑给表格：列表增删元素会自动刷新界面，不用手工 Rows.Add
             // 【注意】绑定的同时设计器里已有关键列，若不设 AutoGenerateColumns=false 会多出 Time/CsvCheckType/... 四列
             this.dgvJianCeJiLu.DataSource = list;
+
+
+            string OKValue = IniAPI.INIGetStringValue(iniFile2, "检测结果存储", "OK", "0");
+            string NGValue = IniAPI.INIGetStringValue(iniFile2, "检测结果存储", "NG", "0");
+            string RateValue = IniAPI.INIGetStringValue(iniFile2, "检测结果存储", "Rate", "0");
+            string TotalValue = IniAPI.INIGetStringValue(iniFile2, "检测结果存储", "Total", "0");
+            OKNum = Convert.ToInt32(OKValue);
+            NGNum = Convert.ToInt32(NGValue);
+            TotalNum = Convert.ToInt32(TotalValue);
+            txtOK.Text = OKValue;
+            txtNG.Text = NGValue;
+            txtLiangPinLv.Text = ((double)OKNum / TotalNum).ToString("0.00%");
+            txtZongShu.Text = TotalValue;
         }
         #endregion
 
-        #region 窗体加载 & 相机初始化流程
+        #region 四、窗体加载 & 相机初始化流程
         /// <summary>
         /// 窗体加载事件
         /// 执行流程：读INI决定触发方式 → 枚举相机 → 取第一个相机 → 创建采集FIFO → 设置触发模式 → 订阅采集完成回调
@@ -197,9 +212,21 @@ namespace WindowsForm_DianPIan
             // 4. 订阅FIFO采集完成事件：相机图像就绪后触发回调（子线程）
             acqFifo.Complete += Fifo_Complete;
         }
+
+        /// <summary>
+        /// 【设计器生成的空 Load 事件，名字带 _1】
+        /// 来源：在 VS 设计器里双击窗体误生成，MainForm.Designer.cs 里有一行 this.Load += MainForm_Load_1；
+        /// 注意：构造函数里又手工订阅了 MainForm_Load，等于 Load 被绑了两次——
+        ///       当前方法体是空的所以看不出问题，一旦往里写初始化代码就会执行两遍。
+        /// 建议：确认无用后，删掉 Designer.cs 里那行订阅，再删掉本方法，只保留 MainForm_Load。
+        /// </summary>
+        private void MainForm_Load_1(object sender, EventArgs e)
+        {
+
+        }
         #endregion
 
-        #region 触发模式配置方法
+        #region 五、触发模式配置方法
         /// <summary>
         /// 硬触发配置方法
         /// 触发源：相机物理Line输入信号（外部传感器、PLC信号）
@@ -242,7 +269,7 @@ namespace WindowsForm_DianPIan
         }
         #endregion
 
-        #region FIFO采集完成回调事件
+        #region 六、FIFO采集完成回调事件
         /// <summary>
         /// FIFO图像就绪回调
         /// 执行线程：子线程！所有UI操作必须保证线程安全
@@ -288,7 +315,7 @@ namespace WindowsForm_DianPIan
         }
         #endregion
 
-        #region 跨线程UI更新工具（日志 / 检测记录）
+        #region 七、跨线程UI更新工具（日志 / 检测记录）
 
         #region 日志输出
         /// <summary>
@@ -366,7 +393,7 @@ namespace WindowsForm_DianPIan
 
         #endregion
 
-        #region 界面控件事件
+        #region 八、界面控件事件（绘制 / 按钮）
         /// <summary>
         /// 左侧容器（tlpZuoCe）的重绘事件
         /// 当前是空实现，只保留挂点：
@@ -395,40 +422,7 @@ namespace WindowsForm_DianPIan
         }
         #endregion
 
-        #region 相机参数联动（菜单 → 参数子窗体 → 相机）
-        /// <summary>
-        /// 菜单【相机 → 修改相机参数】点击事件
-        /// 流程：new 子窗体并传入FIFO → 订阅子窗体的参数变更事件 → 非模态显示
-        /// 说明：子窗体要拿到 acqFifo 才能直接写相机参数，所以相机未初始化（acqFifo 为 null）时不应打开它，
-        ///       实际项目里建议先判空再 new，避免子窗体下发参数时空引用。
-        /// </summary>
-        private void tsmiXiuGaiXiangJiCanShu_Click(object sender, EventArgs e)
-        {
-            // 子窗体需要FIFO才能直接改相机参数，相机未初始化时不能打开
-            FrmCameraParams frmCameraParams = new FrmCameraParams(acqFifo);
-            // 订阅子窗体参数变更事件，用户在子窗体确认后回调本窗体的处理方法
-            frmCameraParams.ChangeCameraParams += FrmCamera_changeCameraParms;
-            // 非模态显示：主窗体与子窗体可同时操作
-            frmCameraParams.Show();
-        }
-
-        /// <summary>
-        /// 子窗体参数确认后的回调：把 CameraParams 里的三项参数写到相机
-        /// 执行时机：用户在 FrmCameraParams 点【保存设置】，子窗体触发 ChangeCameraParams 事件
-        /// 说明：三项都通过 FIFO 的 Owned 系列属性下发，不需要另建相机会话
-        /// </summary>
-        private void FrmCamera_changeCameraParms(CameraParams cameraParams)
-        {
-            // 曝光时间：单位毫秒
-            acqFifo.OwnedExposureParams.Exposure = cameraParams.ExposureTime;
-            // 亮度（增益）：0~1归一化值
-            acqFifo.OwnedBrightnessParams.Brightness = cameraParams.Brightness;
-            // GigE传输延迟级别：整型档位，数值越大越抗丢包、帧率越低
-            acqFifo.OwnedGigEVisionTransportParams.LatencyLevel = cameraParams.Level;
-        }
-        #endregion
-
-        #region 本地图像读取（【选择图像】按钮 + 工具运行）
+        #region 九、本地图像读取（【选择图像】按钮 + 工具运行）
         /// <summary>
         /// 【选择图像】按钮点击事件：不经过相机，直接把本地图片读成Cog图像，
         /// 再喂给VPP工具块运行，结果显示在右侧"处理结果图像"里。
@@ -547,6 +541,19 @@ namespace WindowsForm_DianPIan
                     CsvAPI.SaveCsv(CheckType.缺陷检测, jieGuo, "轴承检测");
                     CsvData csvData = new CsvData(DateTime.Now.ToString("dd HH:mm:ss"), CheckType.缺陷检测, jieGuo, "轴承检测");
                     list.Add(csvData);
+                    SaveCheckResult(OKNum, NGNum, (double)OKCount / TotalCount, TotalNum);
+
+
+                    bool comResult = ComPortAPI.Send("COM1", jieGuo);
+                    if (comResult)
+                    {
+                        AppendLog("数据传输成功");
+                    }
+                    else
+                    {
+                        AppendLog("数据传输失败");
+                    }
+
                 }
                 catch (Exception ex)
                 {
@@ -558,8 +565,7 @@ namespace WindowsForm_DianPIan
         }
         #endregion
 
-
-        #region 检测记录加载（【加载数据】按钮）
+        #region 十、检测记录加载（【加载数据】按钮）
         /// <summary>
         /// 【加载数据】按钮点击事件：重新读一遍本月 CSV，把历史记录刷进表格
         /// 用途：程序运行中新写了记录、或用文本编辑器改过 CSV 之后，点一下就能让界面与文件对齐
@@ -580,6 +586,89 @@ namespace WindowsForm_DianPIan
             list = xinLieBiao;
             // 重新绑定数据源，触发整表刷新
             dgvJianCeJiLu.DataSource = list;
+        }
+        #endregion
+
+        #region 十一、检测统计持久化（INI 读写）
+        /// <summary>
+        /// 把累计统计写回 Result.ini 的【检测结果存储】节
+        /// 用途：让 OK 数、NG 数、总数、良率在程序重启后还能接着累计，而不是每次从 0 开始。
+        /// 调用时机：每检测完一张图，在 btnXuanZeTuXiang_Click 里累加完内存计数后调用一次。
+        /// 注意：① 写进去的是"程序启动以来累计后的总量"，不是单张图的数量；
+        ///       ② IniAPI.INIWriteValue 对节点名、键名为空会抛 ArgumentException，这里三个值都是常量，正常不会触发；
+        ///       ③ 每张图连写 4 次磁盘，节拍很快时应改成"退出时统一写一次"或做防抖，否则会拖慢检测。
+        /// </summary>
+        /// <param name="OK">累计合格数</param>
+        /// <param name="NG">累计不合格数</param>
+        /// <param name="rate">本次良品率（0~1 的小数，按字符串原样存储，读回时再格式化）</param>
+        /// <param name="Total">累计总数</param>
+        private void SaveCheckResult(int OK, int NG, double rate, int Total)
+        {
+            // 四个键名与构造函数里读取的键名必须逐字一致，改一处就要同步另一处
+            IniAPI.INIWriteValue(iniFile2, "检测结果存储", "OK", OK.ToString());
+            IniAPI.INIWriteValue(iniFile2, "检测结果存储", "NG", NG.ToString());
+            IniAPI.INIWriteValue(iniFile2, "检测结果存储", "Rate", rate.ToString());
+            IniAPI.INIWriteValue(iniFile2, "检测结果存储", "Total", Total.ToString());
+        }
+        #endregion
+
+        #region 十二、界面事件（占位方法与菜单入口）
+        /// <summary>
+        /// 右侧"处理结果图像"控件（crdChuLiTu）的 Enter 事件（控件获得焦点时触发）
+        /// 当前为空实现，仅保留挂点：将来若要"切进结果图就自动适配缩放"之类的交互，写在这里。
+        /// 说明：Enter 在焦点切换时可能反复触发，一次操作不止一次，不要在这里写"只执行一次"的逻辑。
+        /// </summary>
+        private void crdChuLiTu_Enter(object sender, EventArgs e)
+        {
+
+        }
+
+        /// <summary>
+        /// 菜单【测量 → 点片】点击事件：打开工具块编辑窗体，让用户可视化地修改 VPP 里的工具与参数
+        /// 流程：从单例取出工具块 → 交给 FrmToolBlock → 模态显示 → 用户在子窗体点【保存】即序列化回 VPP 文件
+        /// 用 ShowDialog 而不是 Show 的原因：编辑期间必须挡住主窗体，避免主窗体那条采集链路
+        /// 同时在 Run 同一个 CogToolBlock 对象（它不是线程安全的）。
+        /// 注意：保存成功后必须重启主程序才生效——单例只在首次访问时反序列化一次，运行中不会重读文件。
+        /// </summary>
+        private void tsmiCeLiangDianPian_Click(object sender, EventArgs e)
+        {
+            // 把单例里的工具块实例交给编辑窗体（传的是引用，改的就是同一个对象）
+            FrmToolBlock frmToolBlock = new FrmToolBlock(singleToolBlock.ToolBlock);
+            // 模态显示：子窗体关闭前主窗体不可操作
+            frmToolBlock.ShowDialog();
+        }
+        #endregion
+
+        #region 十三、相机参数联动（菜单 → 参数子窗体 → 相机）
+        /// <summary>
+        /// 菜单【相机 → 修改相机参数】点击事件
+        /// 流程：new 子窗体并传入FIFO → 订阅子窗体的参数变更事件 → 非模态显示
+        /// 说明：子窗体要拿到 acqFifo 才能直接写相机参数，所以相机未初始化（acqFifo 为 null）时不应打开它，
+        ///       实际项目里建议先判空再 new，避免子窗体下发参数时空引用。
+        /// </summary>
+        private void tsmiXiuGaiXiangJiCanShu_Click(object sender, EventArgs e)
+        {
+            // 子窗体需要FIFO才能直接改相机参数，相机未初始化时不能打开
+            FrmCameraParams frmCameraParams = new FrmCameraParams(acqFifo);
+            // 订阅子窗体参数变更事件，用户在子窗体确认后回调本窗体的处理方法
+            frmCameraParams.ChangeCameraParams += FrmCamera_changeCameraParms;
+            // 非模态显示：主窗体与子窗体可同时操作
+            frmCameraParams.Show();
+        }
+
+        /// <summary>
+        /// 子窗体参数确认后的回调：把 CameraParams 里的三项参数写到相机
+        /// 执行时机：用户在 FrmCameraParams 点【保存设置】，子窗体触发 ChangeCameraParams 事件
+        /// 说明：三项都通过 FIFO 的 Owned 系列属性下发，不需要另建相机会话
+        /// </summary>
+        private void FrmCamera_changeCameraParms(CameraParams cameraParams)
+        {
+            // 曝光时间：单位毫秒
+            acqFifo.OwnedExposureParams.Exposure = cameraParams.ExposureTime;
+            // 亮度（增益）：0~1归一化值
+            acqFifo.OwnedBrightnessParams.Brightness = cameraParams.Brightness;
+            // GigE传输延迟级别：整型档位，数值越大越抗丢包、帧率越低
+            acqFifo.OwnedGigEVisionTransportParams.LatencyLevel = cameraParams.Level;
         }
         #endregion
     }

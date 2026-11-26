@@ -86,24 +86,6 @@ namespace WindowsForm_DianPIan
         }
         #endregion
 
-        #region 通用写入接口（预留，尚未实现）
-        /// <summary>
-        /// 通用 CSV 追加写（预留接口，方法体为空）
-        /// 设计意图：让调用方自己指定文件路径与整行字段，便于以后写别的记录文件时复用。
-        /// 接上时的三个要点：
-        ///   ① 用 string.Join(",", list) 把字段拼成一行；
-        ///   ② 字段里若可能含逗号、双引号或换行，必须用英文双引号包住，并把内部引号写成两个，
-        ///      否则列会错位（备注列最容易踩这个坑）；
-        ///   ③ 多线程同时调用要加锁，StreamWriter 打开期间文件是被本进程占用的。
-        /// </summary>
-        /// <param name="path">目标 CSV 文件的完整路径</param>
-        /// <param name="list">按列顺序排列的字段值</param>
-        public void CsvWrite(string path, List<string> list)
-        {
-
-        }
-        #endregion
-
         #region 读取检测记录
         /// <summary>
         /// 读取本月 CSV 文件里的全部检测记录

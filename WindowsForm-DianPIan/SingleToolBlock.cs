@@ -39,7 +39,7 @@ namespace WindowsForm_DianPIan
         private SingleToolBlock()
         {
             string vppPath = Path.Combine(Application.StartupPath, "VPP", "CeLiangZhouCheng.vpp");
-            // 私有构造函数，防止外部实例化
+            // 私有构造函数，防止外部实例化 反序列化
             toolBlock = CogSerializer.LoadObjectFromFile(vppPath) as CogToolBlock;
         }
 
@@ -58,6 +58,38 @@ namespace WindowsForm_DianPIan
         public static SingleToolBlock Instance
         {
             get { return _instance; }
+        }
+        #endregion
+
+        #region VPP 文件保存
+        /// <summary>
+        /// 把工具块序列化保存回 VPP 文件（覆盖 程序目录\VPP\CeLiangZhouCheng.vpp）
+        /// 用途：FrmToolBlock 里用户改完工具配置后点【保存】，最终落盘就走这里。
+        /// 参数来源：一般是编辑控件 CogToolBlockEditV2.Subject 回传的工具块。
+        /// 返回值：true 表示写入成功；false 表示写文件失败（路径不存在、文件被杀毒/资源管理器占用、无写权限等）。
+        /// 注意：① 这里不走单例，直接按固定路径覆盖写，所以保存的是"传入的那个对象"，与单例里的实例是同一个；
+        ///       ② 保存成功也不会让单例重新加载，必须重启程序才能看到新配置；
+        ///       ③ 捕获的是 Exception 且吞掉不记日志，排查失败原因时可临时改成把 ex.Message 弹出来。
+        /// </summary>
+        /// <param name="toolBlock">要保存的工具块实例</param>
+        /// <returns>保存成功返回 true，失败返回 false</returns>
+        public static bool SaveVpp(CogToolBlock toolBlock)
+        {
+            // 与单例构造函数里使用同一个路径，保证"读的"和"写的"是同一个文件
+            string vppPath = Path.Combine(Application.StartupPath, "VPP", "CeLiangZhouCheng.vpp");
+            bool result = false;
+            try
+            {
+                //序列化（将对象保存永久存储二进制）
+                CogSerializer.SaveObjectToFile(toolBlock, vppPath);
+                result = true;
+            }
+            catch (Exception)
+            {
+                // 写失败只返回 false，由调用方决定提示文案；这里不向外抛，避免直接崩界面
+                result = false;
+            }
+            return result;
         }
         #endregion
     }
