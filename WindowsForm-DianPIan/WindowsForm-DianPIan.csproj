@@ -396,6 +396,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SingleToolBlock.cs" />
+    <Compile Include="TcpClientAPI.cs" />
     <EmbeddedResource Include="Form\FrmCameraParams.resx">
       <DependentUpon>FrmCameraParams.cs</DependentUpon>
     </EmbeddedResource>

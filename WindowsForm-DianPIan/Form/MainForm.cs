@@ -668,12 +668,18 @@ namespace WindowsForm_DianPIan
         /// </summary>
         private async void 网口通信ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            // await 异步发送：连接 → 发送 → 接收 三步都在 TcpAPI.Send 内部完成，
-            // 期间 UI 线程不被阻塞（不会出现窗口"未响应"）
-            await TcpAPI.Send(TotalNum.ToString(), "172.16.50.15", 10000);
-            AppendLog("通过TCP发送成功");
-            // 服务端的回传内容由 TcpAPI 写进静态字段 receiveData
-            AppendLog(TcpAPI.receiveData);
+            #region 
+            //// await 异步发送：连接 → 发送 → 接收 三步都在 TcpAPI.Send 内部完成，
+            //// 期间 UI 线程不被阻塞（不会出现窗口"未响应"）
+            //await TcpAPI.Send(TotalNum.ToString(), "172.16.50.15", 10000);
+            //AppendLog("通过TCP发送成功");
+            //// 服务端的回传内容由 TcpAPI 写进静态字段 receiveData
+            //AppendLog(TcpAPI.receiveData);
+            #endregion
+            #region
+            await TcpClientAPI.Send(TotalNum.ToString(), "172.16.50.15", 10000);
+            AppendLog(TcpClientAPI.receiveData);
+            #endregion
         }
         #endregion
 
