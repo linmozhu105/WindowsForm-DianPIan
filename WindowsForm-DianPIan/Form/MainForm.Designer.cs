@@ -30,8 +30,8 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
             this.tlpZongTi = new System.Windows.Forms.TableLayoutPanel();
             this.tlpZuoCe = new System.Windows.Forms.TableLayoutPanel();
             this.tlpShuangTu = new System.Windows.Forms.TableLayoutPanel();
@@ -78,6 +78,7 @@
             this.tsmiTongXin = new System.Windows.Forms.ToolStripMenuItem();
             this.tsmiXiuGaiTongXinFangShi = new System.Windows.Forms.ToolStripMenuItem();
             this.serialPort1 = new System.IO.Ports.SerialPort(this.components);
+            this.网口通信ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tlpZongTi.SuspendLayout();
             this.tlpZuoCe.SuspendLayout();
             this.tlpShuangTu.SuspendLayout();
@@ -220,14 +221,14 @@
             this.dgvJianCeJiLu.BackgroundColor = System.Drawing.Color.White;
             this.dgvJianCeJiLu.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.SingleHorizontal;
             this.dgvJianCeJiLu.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None;
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(243)))), ((int)(((byte)(246)))), ((int)(((byte)(250)))));
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            dataGridViewCellStyle1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(41)))), ((int)(((byte)(55)))));
-            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(243)))), ((int)(((byte)(246)))), ((int)(((byte)(250)))));
-            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(41)))), ((int)(((byte)(55)))));
-            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgvJianCeJiLu.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle5.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(243)))), ((int)(((byte)(246)))), ((int)(((byte)(250)))));
+            dataGridViewCellStyle5.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            dataGridViewCellStyle5.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(41)))), ((int)(((byte)(55)))));
+            dataGridViewCellStyle5.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(243)))), ((int)(((byte)(246)))), ((int)(((byte)(250)))));
+            dataGridViewCellStyle5.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(41)))), ((int)(((byte)(55)))));
+            dataGridViewCellStyle5.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgvJianCeJiLu.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle5;
             this.dgvJianCeJiLu.ColumnHeadersHeight = 36;
             this.dgvJianCeJiLu.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
             this.dgvJianCeJiLu.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
@@ -235,14 +236,14 @@
             this.colLeiXing,
             this.colJieGuo,
             this.colBeiZhu});
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle2.BackColor = System.Drawing.Color.White;
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            dataGridViewCellStyle2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(55)))), ((int)(((byte)(65)))), ((int)(((byte)(81)))));
-            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(232)))), ((int)(((byte)(243)))), ((int)(((byte)(255)))));
-            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(41)))), ((int)(((byte)(55)))));
-            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dgvJianCeJiLu.DefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle6.BackColor = System.Drawing.Color.White;
+            dataGridViewCellStyle6.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            dataGridViewCellStyle6.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(55)))), ((int)(((byte)(65)))), ((int)(((byte)(81)))));
+            dataGridViewCellStyle6.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(232)))), ((int)(((byte)(243)))), ((int)(((byte)(255)))));
+            dataGridViewCellStyle6.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(41)))), ((int)(((byte)(55)))));
+            dataGridViewCellStyle6.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgvJianCeJiLu.DefaultCellStyle = dataGridViewCellStyle6;
             this.dgvJianCeJiLu.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dgvJianCeJiLu.EnableHeadersVisualStyles = false;
             this.dgvJianCeJiLu.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(229)))), ((int)(((byte)(231)))), ((int)(((byte)(235)))));
@@ -706,13 +707,14 @@
             // tsmiSheZhiYinDaoBiaoDing
             // 
             this.tsmiSheZhiYinDaoBiaoDing.Name = "tsmiSheZhiYinDaoBiaoDing";
-            this.tsmiSheZhiYinDaoBiaoDing.Size = new System.Drawing.Size(182, 26);
+            this.tsmiSheZhiYinDaoBiaoDing.Size = new System.Drawing.Size(224, 26);
             this.tsmiSheZhiYinDaoBiaoDing.Text = "设置引导标定";
             // 
             // tsmiTongXin
             // 
             this.tsmiTongXin.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.tsmiXiuGaiTongXinFangShi});
+            this.tsmiXiuGaiTongXinFangShi,
+            this.网口通信ToolStripMenuItem});
             this.tsmiTongXin.Name = "tsmiTongXin";
             this.tsmiTongXin.Size = new System.Drawing.Size(53, 24);
             this.tsmiTongXin.Text = "通信";
@@ -720,8 +722,15 @@
             // tsmiXiuGaiTongXinFangShi
             // 
             this.tsmiXiuGaiTongXinFangShi.Name = "tsmiXiuGaiTongXinFangShi";
-            this.tsmiXiuGaiTongXinFangShi.Size = new System.Drawing.Size(182, 26);
+            this.tsmiXiuGaiTongXinFangShi.Size = new System.Drawing.Size(224, 26);
             this.tsmiXiuGaiTongXinFangShi.Text = "修改通信方式";
+            // 
+            // 网口通信ToolStripMenuItem
+            // 
+            this.网口通信ToolStripMenuItem.Name = "网口通信ToolStripMenuItem";
+            this.网口通信ToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
+            this.网口通信ToolStripMenuItem.Text = "网口通信";
+            this.网口通信ToolStripMenuItem.Click += new System.EventHandler(this.网口通信ToolStripMenuItem_Click);
             // 
             // MainForm
             // 
@@ -806,5 +815,6 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn colJieGuo;
         private System.Windows.Forms.DataGridViewTextBoxColumn colBeiZhu;
         private System.IO.Ports.SerialPort serialPort1;
+        private System.Windows.Forms.ToolStripMenuItem 网口通信ToolStripMenuItem;
     }
 }

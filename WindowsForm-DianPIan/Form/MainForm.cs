@@ -59,10 +59,13 @@ namespace WindowsForm_DianPIan
         private ICogImage cogImage;
 
         /// <summary>
-        /// 窗体关闭标记，用于安全释放资源（当前版本暂未完善释放逻辑）
-        /// 用法约定：FormClosing里先置true，Complete回调入口先判它再决定是否继续
+        /// 窗体关闭标记，用于安全释放资源
+        /// 用法约定：FormClosing 里先置 true，Complete 回调入口先判它再决定是否继续采集。
+        /// 【现状】全项目搜索只有这一行声明，没有任何读写，编译器会报 CS0169（字段从未使用）；
+        ///         要启用就在 FormClosing 里写 isClosing = true，再在 Fifo_Complete 开头判断；
+        ///         暂时不用则保持注释，警告即消失。
         /// </summary>
-        private bool isClosing;
+        //private bool isClosing;
 
         /// <summary>
         /// 相机INI配置文件完整路径：程序运行目录/INI/camera.ini
@@ -212,6 +215,9 @@ namespace WindowsForm_DianPIan
 
             // 4. 订阅FIFO采集完成事件：相机图像就绪后触发回调（子线程）
             acqFifo.Complete += Fifo_Complete;
+            serialPort1.Open();
+            serialPort1.DataReceived += Sp_DataReceived;
+
         }
 
         /// <summary>
@@ -446,7 +452,7 @@ namespace WindowsForm_DianPIan
             //if (openFileDialog.ShowDialog() == DialogResult.OK)
             //{
             //    // 获取用户选中文件的完整绝对路径
-            //    string filePath = openFileDialog.FileName;
+            //    string filePath = openFileDialog.FileName;    
 
             //    // 调用图像工具打开文件，打开模式：只读
             //    cogImageFileTool.Operator.Open(filePath, CogImageFileModeConstants.Read);
@@ -556,8 +562,14 @@ namespace WindowsForm_DianPIan
                     //    AppendLog("数据传输失败");
                     //}
                     //serialportl.Open();
+                    // 把本次结果（OK / NG）通过串口发给下位机（PLC、报警灯、分拣机构等）
+                    // 【隐患】serialPort1 是设计器拖进来的组件，代码里从未调用 Open()，
+                    //         端口未打开时 Write 会抛 InvalidOperationException，表现就是
+                    //         "CSV 已经写进去了、界面却提示检测失败"。使用前必须先 Open，
+                    //         推荐在窗体 Load 里 Open 一次、FormClosing 里 Close。
                     serialPort1.Write(jieGuo);
-                    serialPort1.DataReceived += Sp_DataReceived;
+                    // 【隐患】每检测一次就订阅一次，事件会不断累加：检测 10 次后收到一次数据会触发 10 次回调。
+                    //         正确做法是把订阅挪到窗体加载时只做一次，或停止通信时用 -= 取消。
                 }
                 catch (Exception ex)
                 {
@@ -568,15 +580,6 @@ namespace WindowsForm_DianPIan
             #endregion
         }
         #endregion
-        public void Sp_DataReceived(object sender, SerialDataReceivedEventArgs e)
-        {
-            SerialPort sp = sender as SerialPort;
-            int size = sp.BytesToRead;
-            byte[] buffer = new byte[size];
-            sp?.Read(buffer, 0, size);
-            string data = Encoding.UTF8.GetString(buffer);
-            sp.Close();
-        }
 
         #region 十、检测记录加载（【加载数据】按钮）
         /// <summary>
@@ -625,7 +628,56 @@ namespace WindowsForm_DianPIan
         }
         #endregion
 
-        #region 十二、界面事件（占位方法与菜单入口）
+        #region 十二、串口通信
+        /// <summary>
+        /// 串口数据接收回调（由 SerialPort.DataReceived 触发）
+        /// 执行线程：串口自己的后台线程，不是 UI 线程！
+        /// 流程：取缓冲区字节数 → 一次性全部读出 → 按 UTF-8 解成字符串
+        /// 注意：① 读出来的 data 没有被使用，也没有写日志或显示到界面，属于"收完就丢"，
+        ///          要做双向通信应在这里解析协议并 Invoke 回主线程更新界面；
+        ///       ② 结尾 sp.Close() 会直接关闭串口——收到一次数据后端口就关了，
+        ///          之后再 Write 会抛 InvalidOperationException（端口未打开）；
+        ///       ③ 回调在非 UI 线程，碰任何控件都要 Invoke（可参考 AppendLog 的写法）。
+        /// </summary>
+        public void Sp_DataReceived(object sender, SerialDataReceivedEventArgs e)
+        {
+            // sender 就是触发事件的 SerialPort 实例，转成具体类型后才能读数据
+            SerialPort sp = sender as SerialPort;
+            // BytesToRead：接收缓冲区里已到达的字节数；为 0 时下面的 new byte[0] 不会报错
+            int size = sp.BytesToRead;
+            byte[] buffer = new byte[size];
+            // 把缓冲区里的字节全部读进 buffer（第三个参数是要读的字节数）
+            sp?.Read(buffer, 0, size);
+            // 按 UTF-8 解码；若对端用 GBK 发送，中文会变乱码，需换成 Encoding.GetEncoding("GBK")
+            string data = Encoding.UTF8.GetString(buffer);
+            // 关闭串口：这一步之后端口不可再读写，需要重新 Open 才能继续通信
+            sp.Close();
+        }
+        #endregion
+
+        #region 十三、网口通信（TCP 客户端）
+        /// <summary>
+        /// 菜单【网口通信】点击事件：把当前累计总数通过 TCP 发给服务端，并把回传内容写进日志
+        /// 为什么是 async void：本方法由设计器用 EventHandler 订阅（形参 object + EventArgs、返回 void），
+        ///   签名必须完全一致才能挂上 Click 事件；写成 async Task 会编译失败
+        ///   （CS0407：返回类型错误）。async void 是事件处理器的标准写法。
+        /// 注意：① async void 的异常无法被调用方捕获，会直接抛到 UI 线程弹"未处理异常"，
+        ///          这里没有 try/catch，服务端没开时会直接崩，建议包一层；
+        ///       ② 发送的是 TotalNum（累计总数），与串口发的是"本次 OK/NG"不是一回事；
+        ///       ③ IP 与端口硬编码 172.16.50.15:10000，换现场要改这里或提到 INI 配置。
+        /// </summary>
+        private async void 网口通信ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            // await 异步发送：连接 → 发送 → 接收 三步都在 TcpAPI.Send 内部完成，
+            // 期间 UI 线程不被阻塞（不会出现窗口"未响应"）
+            await TcpAPI.Send(TotalNum.ToString(), "172.16.50.15", 10000);
+            AppendLog("通过TCP发送成功");
+            // 服务端的回传内容由 TcpAPI 写进静态字段 receiveData
+            AppendLog(TcpAPI.receiveData);
+        }
+        #endregion
+
+        #region 十四、界面事件（占位方法与菜单入口）
         /// <summary>
         /// 右侧"处理结果图像"控件（crdChuLiTu）的 Enter 事件（控件获得焦点时触发）
         /// 当前为空实现，仅保留挂点：将来若要"切进结果图就自动适配缩放"之类的交互，写在这里。
@@ -652,7 +704,7 @@ namespace WindowsForm_DianPIan
         }
         #endregion
 
-        #region 十三、相机参数联动（菜单 → 参数子窗体 → 相机）
+        #region 十五、相机参数联动（菜单 → 参数子窗体 → 相机）
         /// <summary>
         /// 菜单【相机 → 修改相机参数】点击事件
         /// 流程：new 子窗体并传入FIFO → 订阅子窗体的参数变更事件 → 非模态显示

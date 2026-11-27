@@ -370,6 +370,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CameraParams.cs" />
+    <Compile Include="TcpAPI.cs" />
     <Compile Include="ComPortAPI.cs" />
     <Compile Include="CsvAPI.cs" />
     <Compile Include="CsvData.cs" />

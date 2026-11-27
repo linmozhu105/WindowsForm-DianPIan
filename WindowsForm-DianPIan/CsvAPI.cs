@@ -20,7 +20,7 @@ namespace WindowsForm_DianPIan
     /// 常见故障：CSV 文件正被 Excel / WPS 打开时会被独占锁定，此时写入抛 IOException
     ///           （提示"正由另一进程使用，因此该进程无法访问此文件"），这是外部占用，关掉表格软件即可。
     /// </summary>
-    public class CsvAPI
+    public static class CsvAPI
     {
         #region 常量与静态初始化
 
