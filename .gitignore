@@ -361,3 +361,6 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+
+# 界面预览产物（把 exe 与 Cognex 运行时 DLL 拷到独立目录跑起来截图用，约 50MB，不入库）
+_ui_preview/
